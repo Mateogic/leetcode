@@ -38,10 +38,8 @@ public class tree {
         List<Integer> res2 = new ArrayList<>();
         preorder_iteration(root, res2);
         System.out.println("前序遍历(迭代):"+res2);
-        // Morris版前序遍历
-        // List<Integer> pre_res_morris = new ArrayList<>();
-        // preorder_iteration(root, pre_res_morris);
-        // System.out.println("前序遍历(Morris):"+pre_res_morris+"\n====================");
+        System.out.println("====================");
+
 
         // 递归版中序遍历
         List<Integer> res3 = new ArrayList<>();
@@ -51,10 +49,8 @@ public class tree {
         List<Integer> res4 = new ArrayList<>();
         inorder_iteration(root, res4);
         System.out.println("中序遍历(迭代):"+res4);
-        // // Morris版中序遍历
-        // List<Integer> in_res_morris = new ArrayList<>();
-        // inorder_iteration(root, in_res_morris);
-        // System.out.println("中序遍历(Morris):"+in_res_morris+"\n====================");
+        System.out.println("====================");
+
 
         // 递归版后序遍历
         List<Integer> res5 = new ArrayList<>();
@@ -64,12 +60,29 @@ public class tree {
         List<Integer> res6 = new ArrayList<>();
         postorder_iteration(root, res6);
         System.out.println("后序遍历(迭代):"+res6);
+        System.out.println("====================");
 
 
-        // 迭代版后序遍历
+        // 层序遍历
         List<List<Integer>> level_res = new ArrayList<>();
         levelorder_queue(root, level_res);
         System.out.println("层序遍历:"+level_res);
+        System.out.println("====================");
+
+
+        // Morris序
+        List<Integer> morris_res = new ArrayList<>();
+        morris(root,morris_res);
+        System.out.println("Morris顺序:"+morris_res);// [0, 1, 3, 1, 4, 0, 2, 5, 2, 6]
+        // 对于有左子树的节点，会被访问两次，否则访问一次
+        // 前序遍历(Morris)
+        List<Integer> morris_pre_res = new ArrayList<>();
+        morrisPreorder(root,morris_pre_res);
+        System.out.println("前序遍历(Morris):"+morris_pre_res);
+        // 中序遍历(Morris)
+        List<Integer> morris_in_res = new ArrayList<>();
+        morrisInorder(root,morris_in_res);
+        System.out.println("中序遍历(Morris):"+morris_in_res);
     }
 
     // 根据一维的层序遍历列表(用null表示空节点)构造二叉树，返回根节点
@@ -127,9 +140,6 @@ public class tree {
                 stk.push(node.left);
         }
     }
-    // 二叉树的前序遍历(Morris)
-
-
 
     // 二叉树的中序遍历(递归)lc94
     private static void inorder_recursion(TreeNode root, List<Integer> res){
@@ -156,9 +166,6 @@ public class tree {
                 cur = node.right;
         }
     }
-    // 二叉树的中序遍历(Morris)
-
-
 
     // 二叉树的后序遍历(递归)lc145
     private static void postorder_recursion(TreeNode root, List<Integer> res){
@@ -186,8 +193,6 @@ public class tree {
         // 翻转
         Collections.reverse(res);
     }
-    // 二叉树的后序遍历(Morris)
-
     // 广度优先搜索(BFS、队列)
     // 二叉树的层序遍历
     private static void levelorder_queue(TreeNode root, List<List<Integer>> res){
@@ -206,5 +211,87 @@ public class tree {
             }
             res.add(tmp);
         }
+    }
+
+    // Morris顺序:0 1 3 1 4 0 2 5 2 6
+    private static void morris(TreeNode root, List<Integer> res){
+        if (root == null) 
+            return;
+        TreeNode cur = root;
+        TreeNode mostRight = null;
+        while (cur != null) {
+            res.add(cur.val);// 处理节点前加入列表
+            mostRight = cur.left;
+            if (mostRight != null) { // cur有左树
+                // 找到左树最右节点
+                // 注意左树最右节点的右指针可能指向空，也可能指向cur
+                while (mostRight.right != null && mostRight.right != cur) {
+                    mostRight = mostRight.right;
+                }
+                // 判断左树最右节点的右指针状态
+                if (mostRight.right == null) { // 第一次到达
+                    mostRight.right = cur;
+                    cur = cur.left;
+                    continue;
+                } else { // 第二次到达
+                    mostRight.right = null;
+                }
+            }
+            cur = cur.right;
+        }
+    }
+
+    // 前序遍历(Morris)
+    private static void morrisPreorder(TreeNode root, List<Integer> res){
+        TreeNode cur = root;
+		TreeNode mostRight = null;
+		while (cur != null) {
+			mostRight = cur.left;
+			if (mostRight != null) { // cur有左树
+				// 找到左树最右节点
+				// 注意左树最右节点的右指针可能指向空，也可能指向cur
+				while (mostRight.right != null && mostRight.right != cur) {
+					mostRight = mostRight.right;
+				}
+				// 判断左树最右节点的右指针状态
+				if (mostRight.right == null) { // 第一次到达
+					res.add(cur.val);
+					mostRight.right = cur;
+					cur = cur.left;
+					continue;
+				} else { // 第二次到达
+					mostRight.right = null;
+				}
+			} else { // cur无左树
+				res.add(cur.val);
+			}
+			cur = cur.right;
+		}
+    }
+
+    // 中序遍历(Morris)
+    private static void morrisInorder(TreeNode root, List<Integer> res){
+        TreeNode cur = root;
+		TreeNode mostRight = null;
+		while (cur != null) {
+			mostRight = cur.left;
+			if (mostRight != null) { // cur有左树
+				// 找到左树最右节点
+				// 注意左树最右节点的右指针可能指向空，也可能指向cur
+				while (mostRight.right != null && mostRight.right != cur) {
+					mostRight = mostRight.right;
+				}
+				// 判断左树最右节点的右指针状态
+				if (mostRight.right == null) { // 第一次到达
+					mostRight.right = cur;
+					cur = cur.left;
+					continue;
+				} else { // 第二次到达
+					mostRight.right = null;
+				}
+			}
+			res.add(cur.val);
+			cur = cur.right;
+		}
     }
 }
