@@ -12,7 +12,8 @@
 // @lc code=start
 
 import java.util.ArrayList;
-
+import java.util.List;
+import java.util.Stack;
 /**
  * Definition for a binary tree node.
  * public class TreeNode {
@@ -31,19 +32,36 @@ import java.util.ArrayList;
 class Solution {
     public List<Integer> inorderTraversal(TreeNode root) {
         List<Integer> res = new ArrayList<>();
-        inorder(root, res);
+        inorder_recursion(root, res);
+        // inorder_iteration(root, res);
         return res;
     }
     // 递归
-    private void inorder(TreeNode root, List<Integer> res){
+    private void inorder_recursion(TreeNode root, List<Integer> res){
         if (root==null) 
             return ;
-        inorder(root.left, res);
+        inorder_recursion(root.left, res);
         res.add(root.val);
-        inorder(root.right, res);
+        inorder_recursion(root.right, res);
+    }
+    // 迭代
+    private void inorder_iteration(TreeNode root, List<Integer> res){
+        if(root==null)
+            return ;
+        Stack<TreeNode> stk = new Stack<>();
+        TreeNode cur = root;
+        while (!stk.isEmpty() || cur!=null) {
+            while (cur!=null) {// 找到二叉树的左下角节点
+                stk.push(cur);
+                cur = cur.left;
+            }// 出循环后左下角节点为栈顶元素
+            TreeNode node = stk.pop();
+            res.add(node.val);
+            if (node.right!=null)
+                cur = node.right;     
+        }
     }
 
-    // 迭代
 }
 // @lc code=end
 

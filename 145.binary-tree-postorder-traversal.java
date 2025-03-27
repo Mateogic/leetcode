@@ -13,6 +13,8 @@
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
+import java.util.Collections;
 
 /**
  * Definition for a binary tree node.
@@ -32,18 +34,35 @@ import java.util.List;
 class Solution {
     public List<Integer> postorderTraversal(TreeNode root) {
         List<Integer> res = new ArrayList<>();
-        postorder(root, res);
+        // postorder_recursion(root, res);
+        postorder_iteration(root, res);
         return res;
     }
     // 递归
-    private void postorder(TreeNode root, List<Integer> res){
+    private void postorder_recursion(TreeNode root, List<Integer> res){
         if (root==null) 
             return ;
-        postorder(root.left, res);
-        postorder(root.right, res);
+        postorder_recursion(root.left, res);
+        postorder_recursion(root.right, res);
         res.add(root.val);
     }
     // 迭代
+    private void postorder_iteration(TreeNode root, List<Integer> res){
+        if(root==null)
+            return ;
+        Stack<TreeNode> stk = new Stack<>();
+        stk.push(root);
+        while (!stk.isEmpty()) {
+            TreeNode node = stk.pop();
+            res.add(node.val);
+            if(node.left!=null)
+                stk.push(node.left);
+            if (node.right!=null) 
+                stk.push(node.right);
+        }
+        // 翻转
+        Collections.reverse(res);
+    }
 }
 // @lc code=end
 

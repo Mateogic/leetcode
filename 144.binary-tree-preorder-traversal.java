@@ -13,7 +13,7 @@
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Stack;
 /**
  * Definition for a binary tree node.
  * public class TreeNode {
@@ -32,22 +32,34 @@ import java.util.List;
 class Solution {
     public List<Integer> preorderTraversal(TreeNode root) {
         List<Integer> res = new ArrayList<>();
-        preorder(root,res);
+        // preorder_recursion(root,res);// 递归
+        preorder_iteration(root,res);// 迭代
         return res;
     }
     // 递归
-    private void preorder(TreeNode root, List<Integer> res){
+    private void preorder_recursion (TreeNode root, List<Integer> res){
         if (root==null) 
             return;
         res.add(root.val);
-        preorder(root.left, res);
-        preorder(root.right, res);
+        preorder_recursion(root.left, res);
+        preorder_recursion(root.right, res);
     }
 
     // 迭代
-    // public List<Integer> preorderTraversal(TreeNode root) {
-        
-    // }
+    private void preorder_iteration (TreeNode root, List<Integer> res){
+        if (root==null) 
+            return ;
+        Stack<TreeNode> stk = new Stack<>();
+        stk.push(root);
+        while (!stk.isEmpty()) {
+            TreeNode node = stk.pop();// 取出根结点
+            res.add(node.val);
+            if(node.right!=null)// 先右节点入栈
+                stk.push(node.right);
+            if(node.left!=null)// 后左节点入栈
+                stk.push(node.left);
+        }
+    }
 }
 // @lc code=end
 
