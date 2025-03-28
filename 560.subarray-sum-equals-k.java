@@ -10,11 +10,11 @@
 
 // @lcpr-template-end
 // @lc code=start
-// 前缀和+哈希表优化
 
 import java.util.HashMap;
 import java.util.Map;
-
+// 前缀和+哈希表优化
+// 用一个哈希表 cnt 统计 s[j] 的个数。那么枚举到 s[j] 时，就可以用O(1)的时间复杂度从哈希表中就可以找到有 cnt[s[j]−k] 个 s[i]，即为元素和等于 k 的子数组个数
 class Solution {
     public int subarraySum(int[] nums, int k) {
         int res = 0, pre = 0;
@@ -25,7 +25,7 @@ class Solution {
             if (mp.containsKey(pre-k)) {// 以i结尾子数组中和为k的数量为mp.get(pre-k)
                 res+=mp.get(pre-k);
             }
-            mp.put(pre, mp.getOrDefault(pre, 0)+1);// 更新mp
+            mp.put(pre, mp.getOrDefault(pre, 0)+1);// 更新和为pre前缀和的数量
         }
         return res;
     }
@@ -34,10 +34,10 @@ class Solution {
 // class Solution {
 //     public int subarraySum(int[] nums, int k) {
 //         int res = 0, len = nums.length;
-//         for(int start = 0;start < len;start++){
+//         for(int end = 0;end < len;end++){
 //             int sum = 0;
-//             for(int end = start;end>=0;end--){
-//                 sum+=nums[end];
+//             for(int start = end;start>=0;start--){
+//                 sum+=nums[start];
 //                 if (sum == k) {
 //                     res++;
 //                 }
@@ -46,7 +46,6 @@ class Solution {
 //         return res;
 //     }
 // }
-
 // @lc code=end
 
 
