@@ -91,7 +91,8 @@ public class tree {
         if (levelOrder==null || levelOrder.isEmpty() || levelOrder.get(0)==null) 
             return null;
         // 创建所有节点
-        List<TreeNode> nodes = new ArrayList<>(levelOrder.size());
+        int size  = levelOrder.size();
+        List<TreeNode> nodes = new ArrayList<>(size);
         for(Integer val : levelOrder){
             if(val!=null)
                 nodes.add(new TreeNode(val));
@@ -100,19 +101,18 @@ public class tree {
         }
 
         // 根据索引关系构造二叉树
-        int size = nodes.size();
         for (int i = 0; i < size; i++) {
             TreeNode cur = nodes.get(i);
             if (cur!=null) {// 仅非空节点才有子节点
                 int leftidx = 2*i+1;// 左子节点索引
                 int rightidx = 2*i+2;// 右子节点索引
                 if(leftidx < size)
-                    cur.left = nodes.get(leftidx);// nodes.get(leftidx)可能为null
+                    cur.left = nodes.get(leftidx);// 左右子节点可能为null
                 if(rightidx < size)
                     cur.right = nodes.get(rightidx);
             }
         }
-        return nodes.get(0);
+        return nodes.get(0);// 返回构造二叉树的头节点
     }
 
     // 深度优先搜索(DFS、栈)
@@ -134,7 +134,7 @@ public class tree {
         while(!stk.isEmpty()){
             TreeNode node = stk.pop();
             res.add(node.val);
-            if(node.right!=null)
+            if(node.right!=null)// 压栈顺序与出栈顺序相反
                 stk.push(node.right);
             if (node.left!=null)
                 stk.push(node.left);
@@ -159,10 +159,10 @@ public class tree {
             while (cur!=null) {
                 stk.push(cur);
                 cur = cur.left;
-            }// 栈顶元素为最左下角的节点
+            }// 持续将左子树的左孩子压栈，栈顶为最左下角的节点
             TreeNode node = stk.pop();
             res.add(node.val);
-            if(node.right!=null)
+            if(node.right!=null)// 弹栈返回上层，尝试处理右子树
                 cur = node.right;
         }
     }
@@ -199,26 +199,28 @@ public class tree {
         Queue<TreeNode> queue = new LinkedList<>();
         if(root!=null)
             queue.offer(root);
-        while (!queue.isEmpty()) {
+        while (!queue.isEmpty()) {// 每次while循环处理存储在队列的一层节点
             List<Integer> tmp = new ArrayList<>();
-            for(int i = queue.size();i>0;i--){
+            // 每次for循环处理队列中的一个节点
+            for(int i = queue.size();i>0;i--){// 倒序遍历，否则size会因多次调用改变取值
                 TreeNode node = queue.poll();
-                tmp.add(node.val);
+                tmp.add(node.val);// 将本层的节点加到tmp
                 if(node.left!=null)
-                    queue.offer(node.left);
+                    queue.offer(node.left);// 将下一层的非空节点入队
                 if(node.right!=null)
                     queue.offer(node.right);
             }
-            res.add(tmp);
+            res.add(tmp);// 添加各层的遍历结果
         }
     }
 
     // Morris顺序:0 1 3 1 4 0 2 5 2 6
+    // 对于有左子树的节点，会被访问两次，否则访问一次
     private static void morris(TreeNode root, List<Integer> res){
         if (root == null) 
             return;
         TreeNode cur = root;
-        TreeNode mostRight = null;
+        TreeNode mostRight = null;// 左子树的最右节点
         while (cur != null) {
             res.add(cur.val);// 处理节点前加入列表
             mostRight = cur.left;
@@ -229,69 +231,83 @@ public class tree {
                     mostRight = mostRight.right;
                 }
                 // 判断左树最右节点的右指针状态
-                if (mostRight.right == null) { // 第一次到达
-                    mostRight.right = cur;
-                    cur = cur.left;
+                if (mostRight.right == null) { // 第一次到达(指向null)
+                    mostRight.right = cur;// 改变指向到cur
+                    cur = cur.left;// cur左移
                     continue;
-                } else { // 第二次到达
-                    mostRight.right = null;
+                } else { // 第二次到达(指向cur)
+                    mostRight.right = null;// 改回指向到null
+                    cur = cur.right;// cur右移
                 }
             }
-            cur = cur.right;
+            else// cur无左树，cur右移
+                cur = cur.right;
         }
     }
 
     // 前序遍历(Morris)
+    // 无左树收集，第一次到达收集，第二次到达不收集
     private static void morrisPreorder(TreeNode root, List<Integer> res){
+        if (root == null) 
+            return;
         TreeNode cur = root;
-		TreeNode mostRight = null;
-		while (cur != null) {
-			mostRight = cur.left;
-			if (mostRight != null) { // cur有左树
-				// 找到左树最右节点
-				// 注意左树最右节点的右指针可能指向空，也可能指向cur
-				while (mostRight.right != null && mostRight.right != cur) {
-					mostRight = mostRight.right;
-				}
-				// 判断左树最右节点的右指针状态
-				if (mostRight.right == null) { // 第一次到达
-					res.add(cur.val);
-					mostRight.right = cur;
-					cur = cur.left;
-					continue;
-				} else { // 第二次到达
-					mostRight.right = null;
-				}
-			} else { // cur无左树
-				res.add(cur.val);
-			}
-			cur = cur.right;
-		}
+        TreeNode mostRight = null;// 左子树的最右节点
+        while (cur != null) {
+            mostRight = cur.left;
+            if (mostRight != null) { // cur有左树
+                // 找到左树最右节点
+                // 注意左树最右节点的右指针可能指向空，也可能指向cur
+                while (mostRight.right != null && mostRight.right != cur) {
+                    mostRight = mostRight.right;
+                }
+                // 判断左树最右节点的右指针状态
+                if (mostRight.right == null) { // 第一次到达(指向null)
+                    res.add(cur.val);
+                    mostRight.right = cur;// 改变指向到cur
+                    cur = cur.left;// cur左移
+                    continue;
+                } else { // 第二次到达(指向cur)
+                    mostRight.right = null;// 改回指向到null
+                    cur = cur.right;// cur右移
+                }
+            }
+            else{// cur无左树，cur右移
+                res.add(cur.val);
+                cur = cur.right;
+            }
+        }
     }
 
     // 中序遍历(Morris)
+    // 无左树收集，第二次到达收集，第一次到达不收集
     private static void morrisInorder(TreeNode root, List<Integer> res){
+        if (root == null) 
+            return;
         TreeNode cur = root;
-		TreeNode mostRight = null;
-		while (cur != null) {
-			mostRight = cur.left;
-			if (mostRight != null) { // cur有左树
-				// 找到左树最右节点
-				// 注意左树最右节点的右指针可能指向空，也可能指向cur
-				while (mostRight.right != null && mostRight.right != cur) {
-					mostRight = mostRight.right;
-				}
-				// 判断左树最右节点的右指针状态
-				if (mostRight.right == null) { // 第一次到达
-					mostRight.right = cur;
-					cur = cur.left;
-					continue;
-				} else { // 第二次到达
-					mostRight.right = null;
-				}
-			}
-			res.add(cur.val);
-			cur = cur.right;
-		}
+        TreeNode mostRight = null;// 左子树的最右节点
+        while (cur != null) {
+            mostRight = cur.left;
+            if (mostRight != null) { // cur有左树
+                // 找到左树最右节点
+                // 注意左树最右节点的右指针可能指向空，也可能指向cur
+                while (mostRight.right != null && mostRight.right != cur) {
+                    mostRight = mostRight.right;
+                }
+                // 判断左树最右节点的右指针状态
+                if (mostRight.right == null) { // 第一次到达(指向null)
+                    mostRight.right = cur;// 改变指向到cur
+                    cur = cur.left;// cur左移
+                    continue;
+                } else { // 第二次到达(指向cur)
+                    res.add(cur.val);
+                    mostRight.right = null;// 改回指向到null
+                    cur = cur.right;// cur右移
+                }
+            }
+            else{// cur无左树，cur右移
+                res.add(cur.val);
+                cur = cur.right;
+            }
+        }
     }
 }
