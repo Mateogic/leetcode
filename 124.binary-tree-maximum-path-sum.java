@@ -27,10 +27,9 @@
  *     }
  * }
  */
-// 与lc543类似
-// dfs返回以该节点为根的最大链上节点之和，还要和0比较，避免负值节点
-// max(max(root.left,root.right)+root.val,0)
-// 路径之和即左右链之和+自身值 res=max(res,root.left+root.right+root.val)
+// 与lc543类似，区别在于lc543求边数，lc124求点和
+// dfs返回以该节点为根的最大链和，还要和0比较，避免负值节点:max(max(left,right)+root.val,0)
+// 路径之和即左右链之和+该节点值 res=max(res,left+right+root.val)
 // 递归边界条件:空节点的取值为0
 class Solution {
     private Integer res = Integer.MIN_VALUE;
