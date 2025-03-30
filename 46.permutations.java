@@ -37,7 +37,7 @@ class Solution {
                 selected[j] = true; // 标记选过
                 // cur(i)填上nums[j]后，继续尝试从cur(i+1)填到cur(nums.length-1)
                 dfs(i + 1, nums, selected);
-                selected[j] = false; // 恢复现场，取消标记
+                selected[j] = false; // 恢复现场，取消标记，下一轮j+=1，取消标记也不会重复选
                 cur.remove(i);// 恢复现场，删除cur列表索引i处的元素
             }
         }
