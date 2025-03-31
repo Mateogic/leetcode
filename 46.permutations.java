@@ -34,7 +34,7 @@ class Solution {
         for (int j = 0; j < nums.length; j++) {
             if (!selected[j]) {// 尝试将没被选过的nums[j]填到cur(i)
                 cur.add(nums[j]);
-                selected[j] = true; // 标记选过
+                selected[j] = true; // 标记选过，标记仅对后续递归有效，对后续循环无效
                 // cur(i)填上nums[j]后，继续尝试从cur(i+1)填到cur(nums.length-1)
                 dfs(i + 1, nums, selected);
                 selected[j] = false; // 恢复现场，取消标记，下一轮j+=1，取消标记也不会重复选
