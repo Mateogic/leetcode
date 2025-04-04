@@ -20,22 +20,23 @@
  *     TreeNode(int x) { val = x; }
  * }
  */
+// 进阶题目:lc1123 最深叶节点的最近公共祖先
+// 方法的目标是找到以root为根节点的树中，p、q节点的最近公共祖先，包括以下三种返回情况
+    // 若p和q都存在于此树上，则此树上一定存在它们的最近公共祖先，返回该祖先
+    // 若p、q之一存在于此树上，则返回存在者的最近祖先(自身)
+    // 若p、q都不存在于此树上，则返回null
+// 递归处理，向下寻找以不同节点为根的子树中是否存在p、q的最近公共祖先
+// 因为是递归，使用函数后可认为左右子树已经算出结果
+// left标记root的左子树是否存在pq的公共祖先，right标记root的右子树是否存在pq的公共祖先
+// 分为以下情况
+    // 1. left和right都非空，那么left和right分别为p或q节点自身，二者在root的异侧子树，返回root
+    // 2. left和right都为空，那么root的左右子树都没有pq节点，返回null
+    // 3. left非空，right为空，那么pq都在root的左子树上，返回值left即它们的最近公共祖先
+    // 4. left为空，right非空，那么pq都在root的右子树上，返回值right即它们的最近公共祖先
+
+// 递归的边界条件
+    // root==null || root==p || root==q -> return root;
 class Solution {
-    // 方法的目标是找到以root为根节点的树中，p、q节点的最近公共祖先，包括以下三种返回情况
-        // 若p和q都存在于此树上，则此树上一定存在它们的最近公共祖先，返回该祖先
-        // 若p、q之一存在于此树上，则返回存在者的最近祖先(自身)
-        // 若p、q都不存在于此树上，则返回null
-    // 递归处理，向下寻找以不同节点为根的子树中是否存在p、q的最近公共祖先
-    // 因为是递归，使用函数后可认为左右子树已经算出结果
-    // left标记root的左子树是否存在pq的公共祖先，right标记root的右子树是否存在pq的公共祖先
-    // 分为以下情况
-        // 1. left和right都非空，那么left和right分别为p或q节点自身，二者在root的异侧子树，返回root
-        // 2. left和right都为空，那么root的左右子树都没有pq节点，返回null
-        // 3. left非空，right为空，那么pq都在root的左子树上，返回值left即它们的最近公共祖先
-        // 4. left为空，right非空，那么pq都在root的右子树上，返回值right即它们的最近公共祖先
-    
-    // 递归的边界条件
-        // root==null || root==p || root==q -> return root;
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
         if(root==null || root==p || root==q)
             return root;
