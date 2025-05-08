@@ -17,27 +17,19 @@ import java.util.List;
 
 class Solution {
     public List<Integer> findAnagrams(String s, String p) {
-        char[] sarr = s.toCharArray();
-        char[] parr = p.toCharArray();
-        int sLen = sarr.length, pLen = parr.length;
-        List<Integer> res = new ArrayList<Integer>();
-        if (sLen < pLen)// 特殊情况1
-            return res;
-        // 哈希统计[0,pLen-1]子串包含字符情况
-        int[] shash = new int[26];
-        int[] phash = new int[26];
-        for(int i = 0;i<pLen;i++){
-            shash[sarr[i]-'a']++;
-            phash[parr[i]-'a']++;
-        }
-        if (Arrays.equals(shash, phash))// 特殊情况2
-            res.add(0);
-        // 处理一般情况
-        for(int i = 0;i<sLen - pLen;i++){// 枚举从i+1开始的子串
-            shash[sarr[i]-'a']--;// 去除i位置元素
-            shash[sarr[i+pLen]-'a']++;// 添加i+pLen位置元素
-            if (Arrays.equals(shash, phash))
-                res.add(i+1);
+        List<Integer> res = new ArrayList<>();
+        int[] cnt = new int[26];
+        for(char c : p.toCharArray())
+            cnt[c-'a']++;
+        char[] ss = s.toCharArray();
+        int n = ss.length;
+        for(int l = 0, r = 0;r<n;r++){
+            char c = ss[r];
+            cnt[c-'a']--;
+            while(cnt[c-'a'] < 0)
+                cnt[ss[l++]-'a']++;
+            if(r-l+1 == p.length())
+                res.add(l);
         }
         return res;
     }
