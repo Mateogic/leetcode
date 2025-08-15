@@ -19,28 +19,27 @@ class Solution {
     public List<List<Integer>> threeSum(int[] nums) {
         int n = nums.length;
         Arrays.sort(nums);
-        List<List<Integer>> res = new ArrayList<List<Integer>>();
-        for(int first = 0;first < n; first++){
-            if (first > 0 && nums[first] == nums[first-1])// 不再枚举和上次相同的数，否则会重复
+        List<List<Integer>> res = new ArrayList<>();
+        for(int i = 0;i<=n-3;i++){
+            if(i > 0 && nums[i] == nums[i-1])
                 continue;
-            int third = n - 1;
-            for (int second = first + 1;second < n;second++){
-                if (second > first+1 && nums[second] == nums[second-1])
-                    continue;
-                while (second < third && nums[first] + nums[second] + nums[third] > 0)
-                    third--;// 出循环的情况：second == third 或者 nums[first] + nums[second] + nums[third] <= 0
-                // 如果跳出循环的情况为：second == third && nums[first] + nums[second] + nums[third] < 0也不应该继续增大second
-                // 因为这种情形的前步为：third = second + 1 = flag + 1 && nums[first] + nums[second] + nums[third] > 0
-                // 即nums[first] + nums[flag] + nums[flag+1] > 0
-                // 继续增大second枚举，最小三数之和nums[first] + nums[flag+1] + nums[flag+2]必然大于0
-                if (second == third)// 相当于重复使用nums[second]，即便满足nums[first] + nums[second] + nums[third] == 0也不是合法的三元组
-                    break;// 终止循环，继续枚举second不再有合法的third
-                if (nums[first] + nums[second] + nums[third] == 0){
-                    List<Integer> list = new ArrayList<Integer>();
-                    list.add(nums[first]);
-                    list.add(nums[second]);
-                    list.add(nums[third]);
-                    res.add(list);
+            if(nums[i] + nums[i+1] + nums[i+1] > 0)// 优化1
+                break;
+            if(nums[i] + nums[n-2] + nums[n-1] < 0)// 优化2
+                continue;
+            int j = i+1, k = n-1;
+            while(j < k){
+                if(nums[i] + nums[j] + nums[k] > 0)
+                    k--;
+                else if(nums[i] + nums[j] + nums[k] < 0)
+                    j++;
+                else{
+                    res.add(Arrays.asList(nums[i], nums[j], nums[k]));
+                    j++;k--;
+                    while(j < k && nums[j] == nums[j-1])
+                        j++;
+                    while(j < k && nums[k] == nums[k+1])
+                        k--;
                 }
             }
         }
