@@ -12,18 +12,19 @@
 // @lc code=start
 class Solution {
     public int trap(int[] height) {
+        int n = height.length;
         int res = 0;
-        int left = 0, right = height.length-1;
-        int leftMax = 0, rightMax = 0;
-        while (left<right) {
-            leftMax = Math.max(leftMax, height[left]);
-            rightMax = Math.max(rightMax, height[right]);
-            if (leftMax <= rightMax) {
-                res+=leftMax - height[left];
+        int left = 0, right = n-1;
+        int pre_max = 0, suf_max = 0;
+        while(left < right){
+            pre_max = Math.max(pre_max, height[left]);
+            suf_max = Math.max(suf_max, height[right]);
+            if(pre_max < suf_max){
+                res += pre_max - height[left];
                 left++;
             }
             else{
-                res+=rightMax - height[right];
+                res += suf_max - height[right];
                 right--;
             }
         }
