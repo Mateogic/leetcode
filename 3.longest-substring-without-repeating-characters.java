@@ -16,19 +16,13 @@ import java.util.Set;
 
 class Solution {
     public int lengthOfLongestSubstring(String s) {
-        char[] arr = s.toCharArray();
-        int len = arr.length;
-        Set<Character> set = new HashSet<Character>();
-        int res = 0;
-        for(int l = 0,r = 0;r < len;r++){
-            // 窗口中已存在相同字符，收缩左边界
-            while (set.contains(arr[r])) {
-                set.remove(arr[l]);
-                l++;
-            }
-            // 出循环条件：符合题意，即窗口内不含重复字符
-            set.add(arr[r]);
-            res = Math.max(res, r-l+1);
+        Set<Character> set = new HashSet<>();
+        int left = 0, right = 0, res = 0;
+        for(;right<s.length();right++){
+            while(set.contains(s.charAt(right)))
+                set.remove(s.charAt(left++));
+            set.add(s.charAt(right));
+            res = Math.max(res, right - left +1);
         }
         return res;
     }
