@@ -11,7 +11,6 @@
 // @lcpr-template-end
 // @lc code=start
 
-import java.util.List;
 
 /**
  * Definition for singly-linked list.
@@ -32,11 +31,12 @@ import java.util.List;
 class Solution {
     public ListNode removeNthFromEnd(ListNode head, int n) {
         ListNode dummy = new ListNode(0,head);
-        ListNode fast = head, slow = dummy;
+        ListNode fast = dummy, slow = dummy;
         for (int i = 0; i < n; i++) {// 多走n次
             fast = fast.next;
         }
-        while (fast!=null) {// 出循环后 fast = null， slow = n+1
+        // 出循环后 fast 指向最后一个节点，slow指向倒数第 n+1 个节点
+        while (fast.next!=null) {
             fast = fast.next;
             slow = slow.next;
         }

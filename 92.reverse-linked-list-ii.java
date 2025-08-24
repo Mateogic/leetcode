@@ -30,12 +30,12 @@ class Solution {
         // p0放在该段链表的前一个节点处，用于处理反转后该段链表与前后的连接关系
         ListNode p0 = dummy;
         // 找到要反转链表段的第一个节点
-        for (int i = 0; i < left-1; i++)
+        for (int i = 1; i < left; i++)
             p0 = p0.next;
-        ListNode cur = p0.next,pre = null;// cur指向该段链表的第一个节点
+        ListNode cur = p0.next,pre = null,next = null;// cur指向该段链表的第一个节点
         // 反转次数等于该段链表的节点数量
-        for(int i = 0;i< right - left+1;i++){// 该段链表的节点数量为r-l+1
-            ListNode next = cur.next;
+        for(int i = 0;i< right-left+1;i++){// 该段链表的节点数量为r-l+1
+            next = cur.next;
             cur.next = pre;
             pre = cur;
             cur = next;

@@ -33,17 +33,17 @@ class Solution {
         for(ListNode cur = head;cur!=null;cur = cur.next)
             n++;
         ListNode dummy = new ListNode(0,head);
-        ListNode p0 = dummy, pre = null, cur = head;
+        ListNode p0 = dummy, cur = head, pre = null, nxt = null;
         while (n>=k) {
             n-=k;
             for (int i = 0; i < k; i++) {// 反转k个节点一段的链表
-                ListNode nxt = cur.next;
+                nxt = cur.next;
                 cur.next = pre;
                 pre = cur;
                 cur = nxt;
             }
             // 处理反转后该段链表与前后的连接关系
-            ListNode nxt = p0.next;
+            nxt = p0.next;
             p0.next.next = cur;
             p0.next = pre;
             p0 = nxt;// 更新p0到下一段k个节点一段链表的前一个节点位置

@@ -26,7 +26,7 @@
 // 任意时刻，fast走过的长度是slow的二倍，假设此时fast已经走过n圈环
 // 2a+2b = a+(b+c)n+b -> a = (n-1)(b+c)+c
 // 化简后的公式意为：从起点到入环点的距离(a)等于从相遇点到入环点的距离(c)+n-1圈环长
-// 因此，在slow和fast相遇时，在起点新加指针ptr和slow一样每次一步，三者最终将在入环点相遇
+// 因此，在slow和fast相遇时，在起点新加指针ptr和slow一样每次一步，二者最终将在入环点相遇
 public class Solution {
     public ListNode detectCycle(ListNode head) {
         if (head==null || head.next ==null) {
